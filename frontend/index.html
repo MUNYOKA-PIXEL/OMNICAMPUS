@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniCampus - Student Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">OmniCampus</a>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="library.html" class="nav-link">Library</a></li>
+                <li><a href="lost-found.html" class="nav-link">Lost & Found</a></li>
+                <li><a href="clubs.html" class="nav-link">Clubs</a></li>
+                <li><a href="login.html" class="nav-link btn-login">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to OmniCampus</h1>
+            <p>Your all-in-one campus management system</p>
+            <div class="hero-buttons">
+                <a href="register.html" class="btn-primary">Get Started</a>
+                <a href="#features" class="btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Campus Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-book feature-icon"></i>
+                <h3>Library Management</h3>
+                <p>Browse books, check availability, and manage loans</p>
+                <a href="library.html" class="feature-link">Explore Library →</a>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-search feature-icon"></i>
+                <h3>Lost & Found</h3>
+                <p>Report lost items and find what you've misplaced</p>
+                <a href="lost-found.html" class="feature-link">View Items →</a>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users feature-icon"></i>
+                <h3>Student Clubs</h3>
+                <p>Join clubs, attend events, and connect with peers</p>
+                <a href="clubs.html" class="feature-link">Discover Clubs →</a>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3>AI Assistant</h3>
+                <p>Get recommendations and answers to your questions</p>
+                <a href="dashboard.html" class="feature-link">Try AI →</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" id="statBooks">2,500+</span>
+                <span class="stat-label">Books Available</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="statClubs">15+</span>
+                <span class="stat-label">Active Clubs</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="statRecovered">350+</span>
+                <span class="stat-label">Items Recovered</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="statStudents">1,200+</span>
+                <span class="stat-label">Students</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>OmniCampus</h4>
+                <p>Your comprehensive campus management solution</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="lost-found.html">Lost & Found</a></li>
+                    <li><a href="clubs.html">Clubs</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>support@omnicampus.edu</p>
+                <p>+254 700 123456</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 OmniCampus. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

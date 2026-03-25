@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Services - OmniCampus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>OmniCampus</h2>
+                <p>STUDENT PORTAL</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="library.html"><i class="fas fa-book"></i> Library</a></li>
+                    <li><a href="lost-found.html"><i class="fas fa-search"></i> Lost & Found</a></li>
+                    <li><a href="clubs.html"><i class="fas fa-users"></i> Clubs</a></li>
+                    <li class="active"><a href="medical.html"><i class="fas fa-hospital"></i> Medical</a></li>
+                    <li><a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div id="userInfo" class="user-info">
+                    <p><strong>Loading...</strong></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Medical Services</h1>
+                <p>Campus health center and wellness resources</p>
+            </div>
+
+            <!-- Emergency Banner -->
+            <div class="emergency-banner">
+                <div class="emergency-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h3>Medical Emergency?</h3>
+                        <p>Call campus security: <strong>+254 700 123 911</strong> or dial <strong>911</strong> from any campus phone</p>
+                    </div>
+                    <button class="btn-emergency" onclick="emergencyAlert()">
+                        <i class="fas fa-ambulance"></i> EMERGENCY
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-info">
+                        <h3 id="upcomingAppointments">0</h3>
+                        <p>Upcoming Appointments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-history"></i>
+                    <div class="stat-info">
+                        <h3 id="pastAppointments">0</h3>
+                        <p>Past Visits</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-medical"></i>
+                    <div class="stat-info">
+                        <h3 id="prescriptions">0</h3>
+                        <p>Active Prescriptions</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-info">
+                        <h3 id="waitTime">15</h3>
+                        <p>Avg. Wait Time (min)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions-grid">
+                <button class="action-card" onclick="openModal('bookAppointmentModal')">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h3>Book Appointment</h3>
+                    <p>Schedule a visit with our doctors</p>
+                </button>
+                <button class="action-card" onclick="loadMedicalRecords()">
+                    <i class="fas fa-file-medical"></i>
+                    <h3>Medical Records</h3>
+                    <p>View your health records</p>
+                </button>
+                <button class="action-card" onclick="loadPrescriptions()">
+                    <i class="fas fa-prescription"></i>
+                    <h3>Prescriptions</h3>
+                    <p>View and renew prescriptions</p>
+                </button>
+                <button class="action-card" onclick="loadInsuranceInfo()">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Insurance Info</h3>
+                    <p>View insurance details</p>
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('appointments')">My Appointments</button>
+                <button class="tab-btn" onclick="switchTab('doctors')">Doctors</button>
+                <button class="tab-btn" onclick="switchTab('pharmacy')">Pharmacy</button>
+                <button class="tab-btn" onclick="switchTab('resources')">Health Resources</button>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div id="appointments-tab" class="tab-content active">
+                <div class="appointments-list" id="appointmentsList">
+                    <div class="text-center">Loading appointments...</div>
+                </div>
+            </div>
+
+            <!-- Doctors Tab -->
+            <div id="doctors-tab" class="tab-content">
+                <div class="doctors-grid" id="doctorsGrid">
+                    <div class="text-center">Loading doctors...</div>
+                </div>
+            </div>
+
+            <!-- Pharmacy Tab -->
+            <div id="pharmacy-tab" class="tab-content">
+                <div class="pharmacy-section">
+                    <h3>Available Medications</h3>
+                    <div class="medications-grid" id="medicationsGrid">
+                        <div class="text-center">Loading medications...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div id="resources-tab" class="tab-content">
+                <div class="resources-grid" id="resourcesGrid">
+                    <div class="text-center">Loading resources...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Book Appointment Modal -->
+    <div id="bookAppointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> Book Appointment</h2>
+                <button class="close-btn" onclick="closeModal('bookAppointmentModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label>Service Type</label>
+                        <select id="serviceType" required>
+                            <option value="">Select service</option>
+                            <option value="General Checkup">General Checkup</option>
+                            <option value="Counseling">Counseling</option>
+                            <option value="Dental">Dental</option>
+                            <option value="Eye Exam">Eye Exam</option>
+                            <option value="Vaccination">Vaccination</option>
+                            <option value="Lab Test">Lab Test</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Doctor</label>
+                        <select id="doctorSelect" required>
+                            <option value="">Select doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <select id="appointmentTime" required>
+                                <option value="">Select time</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Visit</label>
+                        <textarea id="visitReason" rows="3" placeholder="Briefly describe your symptoms or reason for visit"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Book Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Records Modal -->
+    <div id="medicalRecordsModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-medical"></i> Medical Records</h2>
+                <button class="close-btn" onclick="closeModal('medicalRecordsModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="medicalRecordsList" class="records-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prescriptions Modal -->
+    <div id="prescriptionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-prescription"></i> My Prescriptions</h2>
+                <button class="close-btn" onclick="closeModal('prescriptionsModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="prescriptionsList" class="prescriptions-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insurance Modal -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-id-card"></i> Insurance Information</h2>
+                <button class="close-btn" onclick="closeModal('insuranceModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="insuranceInfo" class="insurance-info"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Confirmation Modal -->
+    <div id="emergencyConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--usiu-red);">
+                <h2><i class="fas fa-exclamation-triangle"></i> Confirm Emergency</h2>
+                <button class="close-btn" onclick="closeModal('emergencyConfirmModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-ambulance" style="font-size: 4rem; color: var(--usiu-red); margin-bottom: 20px;"></i>
+                    <h3>Are you sure you need emergency assistance?</h3>
+                    <p>This will alert campus security and medical staff immediately.</p>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn-secondary" style="flex: 1;" onclick="closeModal('emergencyConfirmModal')">Cancel</button>
+                        <button class="btn-emergency" style="flex: 1;" onclick="confirmEmergency()">Yes, Send Help</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/medical.js"></script>
+</body>
+</html>

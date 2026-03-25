@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - OmniCampus</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>OmniCampus</h2>
+                <p>ADMIN PORTAL</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul id="adminSidebar">
+                    <!-- Will be populated by JavaScript -->
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div id="adminInfo" class="user-info">
+                    <p><strong>Loading...</strong></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 id="sectionTitle">Admin Dashboard</h1>
+                <p id="adminWelcome">Welcome, Administrator</p>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="admin-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-book"></i>
+                        <div class="stat-info">
+                            <h3 id="totalBooks">24</h3>
+                            <p>Total Books</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">156</h3>
+                            <p>Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-hand-holding"></i>
+                        <div class="stat-info">
+                            <h3 id="activeLoans">18</h3>
+                            <p>Active Loans</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div class="stat-info">
+                            <h3 id="pendingRequests">5</h3>
+                            <p>Pending Requests</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Recent Activities</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentActivities" class="activity-list">
+                                <div class="activity-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>New book added: "Clean Code"</span>
+                                    <small>2 min ago</small>
+                                </div>
+                                <div class="activity-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>New student registered: John Doe</span>
+                                    <small>15 min ago</small>
+                                </div>
+                                <div class="activity-item">
+                                    <i class="fas fa-hand-holding"></i>
+                                    <span>Book returned: "Introduction to Algorithms"</span>
+                                    <small>1 hour ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>System Overview</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="adminChart" style="height: 200px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Section -->
+            <div id="library-section" class="admin-section">
+                <h2>Library Management</h2>
+                <div class="admin-actions">
+                    <button class="btn-primary" onclick="addBook()"><i class="fas fa-plus"></i> Add Book</button>
+                </div>
+                <div class="search-section">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="librarySearch" placeholder="Search books..." onkeyup="searchLibrary()">
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Total</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="libraryBooksTable">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Lost & Found Section -->
+            <div id="lostfound-section" class="admin-section">
+                <h2>Lost & Found Management</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchLFTab('lost')">Lost Items</button>
+                    <button class="tab-btn" onclick="switchLFTab('found')">Found Items</button>
+                    <button class="tab-btn" onclick="switchLFTab('matches')">Matches</button>
+                </div>
+
+                <div id="lf-lost" class="admin-tab active">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Student</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lostItemsTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="lf-found" class="admin-tab">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Student</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="foundItemsTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="lf-matches" class="admin-tab">
+                    <div id="matchesList" class="matches-grid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clubs Section -->
+            <div id="clubs-section" class="admin-section">
+                <h2>Clubs Management</h2>
+                <div class="admin-actions">
+                    <button class="btn-primary" onclick="addClub()"><i class="fas fa-plus"></i> Add Club</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Club Name</th>
+                            <th>Category</th>
+                            <th>Members</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clubsTable">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Medical Section -->
+            <div id="medical-section" class="admin-section">
+                <h2>Medical Services Management</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchMedicalTab('doctors')">Doctors</button>
+                    <button class="tab-btn" onclick="switchMedicalTab('appointments')">Appointments</button>
+                    <button class="tab-btn" onclick="switchMedicalTab('medications')">Medications</button>
+                </div>
+
+                <div id="medical-doctors" class="admin-tab active">
+                    <div class="admin-actions">
+                        <button class="btn-primary" onclick="addDoctor()"><i class="fas fa-plus"></i> Add Doctor</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialty</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorsTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="medical-appointments" class="admin-tab">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="medical-medications" class="admin-tab">
+                    <div class="admin-actions">
+                        <button class="btn-primary" onclick="addMedication()"><i class="fas fa-plus"></i> Add Medication</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medicationsTable">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users-section" class="admin-section">
+                <h2>User Management</h2>
+                <div class="search-section">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="userSearch" placeholder="Search users..." onkeyup="searchUsers()">
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load scripts in the correct order: auth.js FIRST, then admin.js -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

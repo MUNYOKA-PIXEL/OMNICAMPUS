@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - OmniCampus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>OmniCampus</h2>
+                <p>STUDENT PORTAL</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="library.html"><i class="fas fa-book"></i> Library</a></li>
+                    <li><a href="lost-found.html"><i class="fas fa-search"></i> Lost & Found</a></li>
+                    <li><a href="clubs.html"><i class="fas fa-users"></i> Clubs</a></li>
+                    <li><a href="medical.html"><i class="fas fa-hospital"></i> Medical</a></li>
+                    <li><a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div id="userInfo" class="user-info">
+                    <p><strong>Loading...</strong></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Student Dashboard</h1>
+                <p id="welcomeMessage">Welcome back!</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-book-open"></i>
+                    <div class="stat-info">
+                        <h3 id="booksBorrowed">3</h3>
+                        <p>Books Borrowed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="stat-info">
+                        <h3 id="upcomingEvents">2</h3>
+                        <p>Upcoming Events</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <h3 id="activeClubs">2</h3>
+                        <p>Active Clubs</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="stat-info">
+                        <h3 id="overdueFines">KES 250</h3>
+                        <p>Overdue Fines</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Current Loans</h3>
+                        <a href="library.html" class="card-link">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th>Book</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="currentLoansTable">
+                                <tr>
+                                    <td>Introduction to Algorithms</td>
+                                    <td>Mar 20, 2025</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Clean Code</td>
+                                    <td>Mar 25, 2025</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Database Systems</td>
+                                    <td>Mar 10, 2025</td>
+                                    <td><span class="status-badge status-overdue">Overdue</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-check"></i> Upcoming Events</h3>
+                        <a href="clubs.html" class="card-link">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-date">Mar 15</div>
+                                <div class="event-details">
+                                    <h4>Hackathon 2025</h4>
+                                    <p>DevClub · Engineering Building</p>
+                                </div>
+                            </div>
+                            <div class="event-item">
+                                <div class="event-date">Mar 20</div>
+                                <div class="event-details">
+                                    <h4>Pitch Night</h4>
+                                    <p>Business Club · Business School</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-robot"></i> AI Assistant</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-container">
+                            <div id="chatMessages" class="chat-messages">
+                                <div class="message bot">
+                                    <i class="fas fa-robot"></i>
+                                    <span>Hello! I'm your campus assistant. Ask me about library, clubs, lost items, or medical services!</span>
+                                </div>
+                            </div>
+                            <div class="chat-input">
+                                <input type="text" id="chatInput" placeholder="Ask me anything...">
+                                <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-lightbulb"></i> Recommended Books</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="book-list">
+                            <div class="book-item">
+                                <i class="fas fa-book book-icon"></i>
+                                <div class="book-details">
+                                    <h4>The Pragmatic Programmer</h4>
+                                    <p>David Thomas</p>
+                                    <span class="availability available">Available</span>
+                                </div>
+                            </div>
+                            <div class="book-item">
+                                <i class="fas fa-book book-icon"></i>
+                                <div class="book-details">
+                                    <h4>Design Patterns</h4>
+                                    <p>Erich Gamma</p>
+                                    <span class="availability available">Available</span>
+                                </div>
+                            </div>
+                            <div class="book-item">
+                                <i class="fas fa-book book-icon"></i>
+                                <div class="book-details">
+                                    <h4>Python Crash Course</h4>
+                                    <p>Eric Matthes</p>
+                                    <span class="availability available">Available</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('welcomeMessage').textContent = 
+                    `Welcome back, ${user.name || user.studentId || 'Student'}!`;
+            }
+        });
+        
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessages = document.getElementById('chatMessages');
+            
+            chatMessages.innerHTML += `
+                <div class="message user">
+                    <span>${message}</span>
+                    <i class="fas fa-user"></i>
+                </div>
+            `;
+            
+            let response = "I'm here to help! Try asking about library, clubs, lost items, medical services, or fines.";
+            
+            if (message.toLowerCase().includes('library')) {
+                response = "📚 The library is open Monday-Friday 8am-8pm. You can borrow up to 5 books for 14 days.";
+            } else if (message.toLowerCase().includes('club')) {
+                response = "🎯 There are several clubs including DevClub, Business Club, and AI/ML Society. Check the Clubs section to join!";
+            } else if (message.toLowerCase().includes('lost')) {
+                response = "🔍 Report lost items in the Lost & Found section. Check 'Potential Matches' to see if your item has been found.";
+            } else if (message.toLowerCase().includes('medical') || message.toLowerCase().includes('doctor') || message.toLowerCase().includes('appointment')) {
+                response = "🏥 You can book appointments with campus doctors in the Medical section. Emergency? Click the red EMERGENCY button!";
+            } else if (message.toLowerCase().includes('fine')) {
+                response = "💰 Library fines are KES 50 per day for overdue books. You can pay online via M-Pesa.";
+            } else if (message.toLowerCase().includes('book')) {
+                response = "📖 You can browse books in the Library section. Use the search feature to find specific titles.";
+            }
+            
+            setTimeout(() => {
+                chatMessages.innerHTML += `
+                    <div class="message bot">
+                        <i class="fas fa-robot"></i>
+                        <span>${response}</span>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    </script>
+</body>
+</html>

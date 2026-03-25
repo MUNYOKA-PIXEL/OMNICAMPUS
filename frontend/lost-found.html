@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found - OmniCampus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Replace just the sidebar section in your existing lost-found.html -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h2>OmniCampus</h2>
+        <p>STUDENT PORTAL</p>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="library.html"><i class="fas fa-book"></i> Library</a></li>
+            <li class="active"><a href="lost-found.html"><i class="fas fa-search"></i> Lost & Found</a></li>
+            <li><a href="clubs.html"><i class="fas fa-users"></i> Clubs</a></li>
+            <li><a href="medical.html"><i class="fas fa-hospital"></i> Medical</a></li>
+            <li><a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <div id="userInfo" class="user-info">
+            <p><strong>Loading...</strong></p>
+        </div>
+    </div>
+</aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Lost & Found System</h1>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick="openModal('reportLostModal')"><i class="fas fa-exclamation-triangle"></i> Report Lost</button>
+                    <button class="btn-secondary" onclick="openModal('reportFoundModal')"><i class="fas fa-check-circle"></i> Report Found</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-info">
+                        <h3 id="lostCount">2</h3>
+                        <p>Lost Items</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check"></i>
+                    <div class="stat-info">
+                        <h3 id="foundCount">1</h3>
+                        <p>Found Items</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-handshake"></i>
+                    <div class="stat-info">
+                        <h3 id="matchCount">1</h3>
+                        <p>Potential Matches</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-percentage"></i>
+                    <div class="stat-info">
+                        <h3 id="recoveryRate">75%</h3>
+                        <p>Recovery Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('all')">All Items</button>
+                <button class="tab-btn" onclick="switchTab('lost')">Lost Items</button>
+                <button class="tab-btn" onclick="switchTab('found')">Found Items</button>
+                <button class="tab-btn" onclick="switchTab('matches')">Potential Matches</button>
+                <button class="tab-btn" onclick="switchTab('my')">My Reports</button>
+            </div>
+
+            <div id="all-items" class="tab-content active">
+                <div class="search-section">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchItems" placeholder="Search items..." onkeyup="filterItems()">
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Item</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsTable"></tbody>
+                </table>
+            </div>
+
+            <div id="lost-items" class="tab-content">
+                <div class="items-grid" id="lostItemsGrid"></div>
+            </div>
+
+            <div id="found-items" class="tab-content">
+                <div class="items-grid" id="foundItemsGrid"></div>
+            </div>
+
+            <div id="matches-items" class="tab-content">
+                <div class="matches-grid" id="matchesGrid"></div>
+            </div>
+
+            <div id="my-reports" class="tab-content">
+                <div class="items-grid" id="myReportsGrid"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Report Lost Modal -->
+    <div id="reportLostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Report Lost Item</h2>
+                <button class="close-btn" onclick="closeModal('reportLostModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="lostForm">
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="lostItemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="lostCategory">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="ID Cards">ID Cards</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="lostDescription" rows="3" placeholder="Color, brand, distinguishing features..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location Lost</label>
+                        <input type="text" id="lostLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date Lost</label>
+                        <input type="date" id="lostDate" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Report Lost Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Found Modal -->
+    <div id="reportFoundModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Report Found Item</h2>
+                <button class="close-btn" onclick="closeModal('reportFoundModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="foundForm">
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="foundItemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="foundCategory">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="ID Cards">ID Cards</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="foundDescription" rows="3" placeholder="Color, brand, distinguishing features..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location Found</label>
+                        <input type="text" id="foundLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date Found</label>
+                        <input type="date" id="foundDate" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Report Found Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Lost & Found data storage
+        let lostItems = [
+            { id: 1, userId: 1, itemName: 'Laptop Charger', category: 'Electronics', description: 'Dell laptop charger, black', location: 'Library 2nd Floor', date: '2025-03-10', status: 'lost', reportedBy: 'John Doe' },
+            { id: 2, userId: 2, itemName: 'Water Bottle', category: 'Accessories', description: 'Blue Hydro Flask, 32oz', location: 'Gym', date: '2025-03-12', status: 'lost', reportedBy: 'Jane Smith' }
+        ];
+
+        let foundItems = [
+            { id: 1, userId: 3, itemName: 'USB Drive', category: 'Electronics', description: '32GB SanDisk, black', location: 'CS Lab', date: '2025-03-14', status: 'found', reportedBy: 'Mike Johnson' },
+            { id: 2, userId: 4, itemName: 'Calculator', category: 'Electronics', description: 'Casio scientific calculator', location: 'Library', date: '2025-03-15', status: 'found', reportedBy: 'Sarah Wilson' }
+        ];
+
+        let myReports = [];
+
+        // Get current user
+        const currentUser = getCurrentUser();
+
+        // Load items on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            displayAllItems();
+            updateStats();
+            checkForMatches();
+            loadMyReports();
+        });
+
+        function displayAllItems() {
+            const tbody = document.getElementById('itemsTable');
+            const allItems = [
+                ...lostItems.map(item => ({ ...item, type: 'lost' })),
+                ...foundItems.map(item => ({ ...item, type: 'found' }))
+            ].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            tbody.innerHTML = allItems.map(item => `
+                <tr>
+                    <td><span class="status-badge ${item.type === 'lost' ? 'status-overdue' : 'status-active'}">${item.type.toUpperCase()}</span></td>
+                    <td>${item.itemName}</td>
+                    <td>${item.description.substring(0, 30)}${item.description.length > 30 ? '...' : ''}</td>
+                    <td>${item.location}</td>
+                    <td>${formatDate(item.date)}</td>
+                    <td><span class="status-badge ${item.type === 'lost' ? 'status-overdue' : 'status-active'}">${item.status}</span></td>
+                    <td>
+                        ${item.type === 'found' ? 
+                            `<button class="btn-secondary" onclick="claimItem(${item.id})">Claim</button>` : 
+                            (item.userId === currentUser?.id ? '<span class="text-muted">Your report</span>' : '')
+                        }
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Update grids
+            displayLostGrid();
+            displayFoundGrid();
+        }
+
+        function displayLostGrid() {
+            const grid = document.getElementById('lostItemsGrid');
+            grid.innerHTML = lostItems.map(item => `
+                <div class="item-card">
+                    <h3>${item.itemName}</h3>
+                    <p>${item.description}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${item.location}</p>
+                    <p><i class="fas fa-calendar"></i> ${formatDate(item.date)}</p>
+                    <p><small>Reported by: ${item.reportedBy}</small></p>
+                </div>
+            `).join('');
+        }
+
+        function displayFoundGrid() {
+            const grid = document.getElementById('foundItemsGrid');
+            grid.innerHTML = foundItems.map(item => `
+                <div class="item-card">
+                    <h3>${item.itemName}</h3>
+                    <p>${item.description}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ${item.location}</p>
+                    <p><i class="fas fa-calendar"></i> ${formatDate(item.date)}</p>
+                    <p><small>Reported by: ${item.reportedBy}</small></p>
+                    <button class="btn-primary" onclick="claimItem(${item.id})" style="margin-top: 10px;">Claim This Item</button>
+                </div>
+            `).join('');
+        }
+
+        function claimItem(itemId) {
+            const item = foundItems.find(i => i.id === itemId);
+            if (!item) return;
+            
+            // Create claim request
+            const claimRequest = {
+                id: Date.now(),
+                itemId: itemId,
+                itemName: item.itemName,
+                claimDate: new Date().toISOString().split('T')[0],
+                status: 'Pending'
+            };
+            
+            myReports.push(claimRequest);
+            
+            // Update item status
+            item.status = 'claimed';
+            
+            showNotification(`Claim request for "${item.itemName}" submitted! Admin will review it.`, 'success');
+            displayAllItems();
+            checkForMatches();
+            loadMyReports();
+        }
+
+        // Handle lost item form
+        document.getElementById('lostForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newItem = {
+                id: Date.now(),
+                userId: currentUser?.id || 1,
+                itemName: document.getElementById('lostItemName').value,
+                category: document.getElementById('lostCategory').value,
+                description: document.getElementById('lostDescription').value,
+                location: document.getElementById('lostLocation').value,
+                date: document.getElementById('lostDate').value,
+                status: 'lost',
+                reportedBy: currentUser?.name || 'Anonymous'
+            };
+            
+            lostItems.push(newItem);
+            
+            showNotification('Lost item reported successfully!', 'success');
+            closeModal('reportLostModal');
+            displayAllItems();
+            updateStats();
+            checkForMatches();
+            e.target.reset();
+        });
+
+        // Handle found item form
+        document.getElementById('foundForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newItem = {
+                id: Date.now(),
+                userId: currentUser?.id || 1,
+                itemName: document.getElementById('foundItemName').value,
+                category: document.getElementById('foundCategory').value,
+                description: document.getElementById('foundDescription').value,
+                location: document.getElementById('foundLocation').value,
+                date: document.getElementById('foundDate').value,
+                status: 'found',
+                reportedBy: currentUser?.name || 'Anonymous'
+            };
+            
+            foundItems.push(newItem);
+            
+            showNotification('Found item reported successfully!', 'success');
+            closeModal('reportFoundModal');
+            displayAllItems();
+            updateStats();
+            checkForMatches();
+            e.target.reset();
+        });
+
+        function checkForMatches() {
+            const matches = [];
+            
+            lostItems.forEach(lost => {
+                foundItems.forEach(found => {
+                    if (lost.status === 'lost' && found.status === 'found') {
+                        // Check for potential matches
+                        if (lost.category === found.category && 
+                            (lost.itemName.toLowerCase().includes(found.itemName.toLowerCase()) ||
+                             found.itemName.toLowerCase().includes(lost.itemName.toLowerCase()))) {
+                            matches.push({ lost, found, score: 0.8 });
+                        }
+                    }
+                });
+            });
+            
+            document.getElementById('matchCount').textContent = matches.length;
+            displayMatches(matches);
+        }
+
+        function displayMatches(matches) {
+            const grid = document.getElementById('matchesGrid');
+            
+            if (matches.length === 0) {
+                grid.innerHTML = '<p class="text-center">No potential matches found yet</p>';
+                return;
+            }
+            
+            grid.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <h3>Potential Match Found!</h3>
+                    <div class="match-items">
+                        <div class="match-item">
+                            <h4>Lost Item</h4>
+                            <p><strong>${match.lost.itemName}</strong></p>
+                            <p>${match.lost.description}</p>
+                            <p>Location: ${match.lost.location}</p>
+                            <p>Date: ${formatDate(match.lost.date)}</p>
+                        </div>
+                        <div class="match-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="match-item">
+                            <h4>Found Item</h4>
+                            <p><strong>${match.found.itemName}</strong></p>
+                            <p>${match.found.description}</p>
+                            <p>Location: ${match.found.location}</p>
+                            <p>Date: ${formatDate(match.found.date)}</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="notifyMatch(${match.lost.id}, ${match.found.id})">
+                        <i class="fas fa-bell"></i> Notify Admin
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function notifyMatch(lostId, foundId) {
+            showNotification('Admin notified about potential match!', 'success');
+        }
+
+        function loadMyReports() {
+            const grid = document.getElementById('myReportsGrid');
+            
+            if (myReports.length === 0) {
+                grid.innerHTML = '<p class="text-center">You haven\'t made any claims yet</p>';
+                return;
+            }
+            
+            grid.innerHTML = myReports.map(report => `
+                <div class="item-card">
+                    <h3>Claim Request</h3>
+                    <p><strong>Item:</strong> ${report.itemName}</p>
+                    <p><strong>Date:</strong> ${report.claimDate}</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-warning">${report.status}</span></p>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('lostCount').textContent = lostItems.length;
+            document.getElementById('foundCount').textContent = foundItems.length;
+            
+            const claimedCount = lostItems.filter(i => i.status === 'claimed').length;
+            const recoveryRate = lostItems.length > 0 ? Math.round((claimedCount / lostItems.length) * 100) : 0;
+            document.getElementById('recoveryRate').textContent = recoveryRate + '%';
+        }
+
+        function filterItems() {
+            const search = document.getElementById('searchItems').value.toLowerCase();
+            const rows = document.querySelectorAll('#itemsTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            
+            const contentId = tab === 'all' ? 'all-items' :
+                             tab === 'lost' ? 'lost-items' :
+                             tab === 'found' ? 'found-items' :
+                             tab === 'matches' ? 'matches-items' : 'my-reports';
+            
+            document.getElementById(contentId).classList.add('active');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : '#3498db'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

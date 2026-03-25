@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - OmniCampus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>OmniCampus</h1>
+                <p>Welcome back! Please login to your account</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('student')">Student</button>
+                <button class="auth-tab" onclick="switchTab('admin')">Admin</button>
+            </div>
+            
+            <!-- Student Login -->
+            <div id="student-login" class="auth-form active">
+                <form id="studentLoginForm">
+                    <div class="form-group">
+                        <label for="studentId">Student ID / Email</label>
+                        <input type="text" id="studentId" placeholder="Enter your student ID or email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentPassword">Password</label>
+                        <input type="password" id="studentPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn-auth">Login</button>
+                </form>
+                <div id="studentLoginStatus" class="auth-status"></div>
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="register.html">Register here</a></p>
+                </div>
+            </div>
+            
+            <!-- Admin Login -->
+            <div id="admin-login" class="auth-form">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" placeholder="Enter admin username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn-auth">Admin Login</button>
+                </form>
+                <div id="adminLoginStatus" class="auth-status"></div>
+            </div>
+            
+            <div class="auth-footer">
+                <p><a href="index.html">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API base URL - make sure this matches your server
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Switch between student and admin tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'student') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('student-login').classList.add('active');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('admin-login').classList.add('active');
+            }
+        }
+        
+        // Student Login Handler
+        document.getElementById('studentLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('studentLoginStatus');
+            const studentId = document.getElementById('studentId').value.trim();
+            const password = document.getElementById('studentPassword').value;
+            
+            // Clear previous status
+            statusDiv.className = 'auth-status';
+            statusDiv.innerHTML = '';
+            
+            // Validate inputs
+            if (!studentId || !password) {
+                statusDiv.className = 'auth-status error show';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter both Student ID and Password';
+                return;
+            }
+            
+            // Show loading
+            statusDiv.className = 'auth-status show';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            try {
+                console.log('Attempting login with:', { username: studentId });
+                
+                const response = await fetch(`${API_BASE}/student/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: studentId,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Login response:', data);
+                
+                if (response.ok) {
+                    // Store user data
+                    localStorage.setItem('omnicampus_user', JSON.stringify(data));
+                    localStorage.setItem('omnicampus_logged_in', 'true');
+                    localStorage.setItem('omnicampus_login_time', Date.now().toString());
+                    localStorage.setItem('token', data.token);
+                    
+                    statusDiv.className = 'auth-status success show';
+                    statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting...';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    statusDiv.className = 'auth-status error show';
+                    statusDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Invalid credentials'}`;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                statusDiv.className = 'auth-status error show';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Connection error. Please make sure the server is running.';
+            }
+        });
+        
+        // Admin Login Handler
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('adminLoginStatus');
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            
+            // Clear previous status
+            statusDiv.className = 'auth-status';
+            statusDiv.innerHTML = '';
+            
+            // Validate inputs
+            if (!username || !password) {
+                statusDiv.className = 'auth-status error show';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter username and password';
+                return;
+            }
+            
+            // Show loading
+            statusDiv.className = 'auth-status show';
+            statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            
+            try {
+                console.log('Attempting admin login with:', { username });
+                
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Admin login response:', data);
+                
+                if (response.ok) {
+                    // Store admin data
+                    localStorage.setItem('omnicampus_user', JSON.stringify(data));
+                    localStorage.setItem('omnicampus_logged_in', 'true');
+                    localStorage.setItem('omnicampus_login_time', Date.now().toString());
+                    localStorage.setItem('token', data.token);
+                    
+                    // Store admin modules based on role
+                    let modules = [];
+                    switch(data.role) {
+                        case 'super_admin':
+                            modules = ['dashboard', 'library', 'lostfound', 'clubs', 'medical', 'users'];
+                            break;
+                        case 'library_admin':
+                            modules = ['dashboard', 'library'];
+                            break;
+                        case 'lost_found_admin':
+                            modules = ['dashboard', 'lostfound'];
+                            break;
+                        case 'clubs_admin':
+                            modules = ['dashboard', 'clubs'];
+                            break;
+                        case 'medical_admin':
+                            modules = ['dashboard', 'medical'];
+                            break;
+                        case 'user_admin':
+                            modules = ['dashboard', 'users'];
+                            break;
+                        default:
+                            modules = ['dashboard'];
+                    }
+                    localStorage.setItem('admin_modules', JSON.stringify(modules));
+                    
+                    statusDiv.className = 'auth-status success show';
+                    statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting...';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'admin/index.html';
+                    }, 1000);
+                } else {
+                    statusDiv.className = 'auth-status error show';
+                    statusDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Invalid credentials'}`;
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                statusDiv.className = 'auth-status error show';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Connection error. Please make sure the server is running.';
+            }
+        });
+        
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedIn = localStorage.getItem('omnicampus_logged_in');
+            const user = localStorage.getItem('omnicampus_user');
+            
+            if (loggedIn === 'true' && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role === 'admin' || userData.role?.includes('_admin') || userData.role === 'super_admin') {
+                        window.location.href = 'admin/index.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (e) {
+                    // Invalid user data, clear it
+                    localStorage.removeItem('omnicampus_user');
+                    localStorage.removeItem('omnicampus_logged_in');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
