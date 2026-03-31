@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+__pycache__
+*.pyc
+node_modules
+README.md
+test_api.py
+test_supabase.py
+pip
+cd

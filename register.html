@@ -67,7 +67,8 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:5000/api';
+        // API base URL - relative to the current host
+        const API_BASE = window.location.origin + '/api';
 
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();

@@ -63,8 +63,8 @@
     </div>
 
     <script>
-        // API base URL - make sure this matches your server
-        const API_BASE = 'http://localhost:5000/api';
+        // API base URL - relative to the current host
+        const API_BASE = window.location.origin + '/api';
 
         // Switch between student and admin tabs
         function switchTab(tab) {
