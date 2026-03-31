@@ -1,24 +1,18 @@
 import os
+import sys
 import datetime
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-# Import local modules using package notation
+# Add root directory to Python path for imports
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+
+# Import local modules using absolute package notation
 try:
-    from .config import Config
-    from .database import close_db
-    from .routes import (
-        library_routes,
-        lost_found_routes,
-        clubs_routes,
-        student_routes,
-        medical_routes,
-        admin_routes
-    )
-except ImportError:
-    # Fallback for direct execution
-    from config import Config
-    from database import close_db
+    from backend.config import Config
+    from backend.database import close_db
     from routes import (
         library_routes,
         lost_found_routes,
@@ -27,12 +21,34 @@ except ImportError:
         medical_routes,
         admin_routes
     )
+except ImportError as e:
+    print(f"Import error: {e}")
+    # Fallback for different environments
+    try:
+        from .config import Config
+        from .database import close_db
+        from .routes import (
+            library_routes,
+            lost_found_routes,
+            clubs_routes,
+            student_routes,
+            medical_routes,
+            admin_routes
+        )
+    except ImportError:
+        from config import Config
+        from database import close_db
+        from routes import (
+            library_routes,
+            lost_found_routes,
+            clubs_routes,
+            student_routes,
+            medical_routes,
+            admin_routes
+        )
 
 def create_app():
-    # In Vercel, the root of the project is where static files are
-    # The current file is in /backend/
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+    # root_dir is already defined above
     app = Flask(__name__,
                 static_folder=root_dir,
                 static_url_path='',
