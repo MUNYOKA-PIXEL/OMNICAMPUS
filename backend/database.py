@@ -1,6 +1,6 @@
 import os
 import sys
-from supabase import create_client, Client
+from supabase import create_client, Client, ClientOptions
 from .config import Config
 
 SUPABASE_URL = Config.SUPABASE_URL
@@ -12,9 +12,13 @@ try:
         print(f"CRITICAL: Invalid Supabase configuration. URL: {SUPABASE_URL}")
         supabase = None
     else:
-        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        # Explicitly disable proxy if it's causing issues
+        options = ClientOptions(postgrest_client_timeout=10)
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY, options=options)
 except Exception as e:
+    import traceback
     print(f"CRITICAL: Failed to initialize Supabase client: {e}")
+    print(traceback.format_exc())
     supabase = None
 
 def get_db():
