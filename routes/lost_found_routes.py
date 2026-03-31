@@ -1,12 +1,4 @@
-import sys
 import os
-from pathlib import Path
-
-# Get the absolute path to the project root
-current_file = Path(__file__).resolve()
-project_root = current_file.parent.parent  # Goes up two levels: routes/ -> backend/ -> project root
-sys.path.insert(0, str(project_root))
-
 from flask import Blueprint, request, jsonify
 from backend.models import LostItem, FoundItem, LostItemClaim, FoundItemClaim
 from backend.auth import token_required, admin_required
