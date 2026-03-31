@@ -1,59 +1,67 @@
-import sqlite3
 import os
-from contextlib import contextmanager
-from flask import current_app, g
+from supabase import create_client, Client
+from dotenv import load_dotenv
 
-DATABASE_PATH = 'database/omnicampus.db'
+load_dotenv()
+
+SUPABASE_URL = os.environ.get('SUPABASE_URL')
+SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+
+# Initialize the Supabase client
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def get_db():
-    """Get database connection"""
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE_PATH)
-        db.row_factory = sqlite3.Row
-    return db
-
-@contextmanager
-def get_db_connection():
-    """Context manager for database connections"""
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
-    try:
-        yield conn
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        raise e
-    finally:
-        conn.close()
+    """Return the Supabase client"""
+    return supabase
 
 def init_db():
-    """Initialize database with schema"""
-    with open('database/schema.sql', 'r') as f:
-        schema = f.read()
-    
-    with get_db_connection() as conn:
-        conn.executescript(schema)
-    
-    print("Database initialized successfully")
+    """
+    Note: Supabase schema should be managed via the Supabase dashboard 
+    or SQL editor using the provided schema.sql.
+    """
+    print("Supabase client initialized. Please ensure schema is applied in Supabase SQL Editor.")
 
-def query_db(query, args=(), one=False):
-    """Execute a query and return results"""
-    with get_db_connection() as conn:
-        cur = conn.execute(query, args)
-        rv = cur.fetchall()
-        cur.close()
-        return (rv[0] if rv else None) if one else rv
+def query_db(table, select="*", filters=None, one=False):
+    """
+    Perform a select query using Supabase SDK
+    Example: query_db('users', filters={'email': 'test@test.com'}, one=True)
+    """
+    query = supabase.table(table).select(select)
+    
+    if filters:
+        for key, value in filters.items():
+            query = query.eq(key, value)
+            
+    result = query.execute()
+    
+    if one:
+        return result.data[0] if result.data else None
+    return result.data
 
-def execute_db(query, args=()):
-    """Execute a query that modifies data"""
-    with get_db_connection() as conn:
-        cur = conn.execute(query, args)
-        conn.commit()
-        return cur.lastrowid
+def execute_db(table, data, operation='insert', filters=None):
+    """
+    Perform insert, update, or delete using Supabase SDK
+    """
+    if operation == 'insert':
+        result = supabase.table(table).insert(data).execute()
+        return result.data[0]['id'] if result.data else None
+    
+    elif operation == 'update':
+        query = supabase.table(table).update(data)
+        if filters:
+            for key, value in filters.items():
+                query = query.eq(key, value)
+        result = query.execute()
+        return result.data
+    
+    elif operation == 'delete':
+        query = supabase.table(table).delete()
+        if filters:
+            for key, value in filters.items():
+                query = query.eq(key, value)
+        result = query.execute()
+        return result.data
 
 def close_db(e=None):
-    """Close database connection"""
-    db = g.pop('_database', None)
-    if db is not None:
-        db.close()
+    """No specific close action needed for Supabase SDK"""
+    pass

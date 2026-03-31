@@ -6,6 +6,7 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     DATABASE_PATH = os.environ.get('DATABASE_PATH', 'database/omnicampus.db')
+    DATABASE_URL = os.environ.get('DATABASE_URL')
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
     JWT_ACCESS_TOKEN_EXPIRES = 86400  # 24 hours
     DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'

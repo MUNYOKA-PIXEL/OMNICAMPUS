@@ -2,7 +2,8 @@
 // OmniCampus - Main JavaScript
 // ============================================
 
-const API_BASE = 'http://localhost:5000/api';
+// Use dynamic host for API calls
+const API_BASE = window.location.origin + '/api';
 
 // Authentication functions
 function getToken() {

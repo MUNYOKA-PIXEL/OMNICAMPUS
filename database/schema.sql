@@ -29,14 +29,14 @@ DROP TABLE IF EXISTS user_admins;
 
 -- Users table (students)
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     student_id VARCHAR(20) UNIQUE NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20),
     password_hash VARCHAR(255) NOT NULL,
-    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1,
     profile_pic VARCHAR(255)
@@ -44,20 +44,20 @@ CREATE TABLE users (
 
 -- Super admins table (full access)
 CREATE TABLE admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     role VARCHAR(50) DEFAULT 'super_admin',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- Library admins
 CREATE TABLE library_admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
@@ -69,14 +69,14 @@ CREATE TABLE library_admins (
     can_delete_books BOOLEAN DEFAULT 0,
     can_manage_loans BOOLEAN DEFAULT 1,
     can_approve_requests BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- Lost & Found admins
 CREATE TABLE lost_found_admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
@@ -87,14 +87,14 @@ CREATE TABLE lost_found_admins (
     can_approve_claims BOOLEAN DEFAULT 1,
     can_delete_items BOOLEAN DEFAULT 0,
     can_manage_matches BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- Clubs admins
 CREATE TABLE clubs_admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
@@ -106,14 +106,14 @@ CREATE TABLE clubs_admins (
     can_delete_clubs BOOLEAN DEFAULT 0,
     can_approve_members BOOLEAN DEFAULT 1,
     can_manage_events BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- Medical admins
 CREATE TABLE medical_admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
@@ -125,14 +125,14 @@ CREATE TABLE medical_admins (
     can_manage_prescriptions BOOLEAN DEFAULT 1,
     can_manage_records BOOLEAN DEFAULT 0,
     can_manage_medications BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- User admins
 CREATE TABLE user_admins (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
@@ -143,14 +143,14 @@ CREATE TABLE user_admins (
     can_edit_users BOOLEAN DEFAULT 1,
     can_delete_users BOOLEAN DEFAULT 0,
     can_create_admins BOOLEAN DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
     is_active BOOLEAN DEFAULT 1
 );
 
 -- Library books
 CREATE TABLE library_books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     author VARCHAR(100) NOT NULL,
     isbn VARCHAR(20) UNIQUE,
@@ -160,7 +160,7 @@ CREATE TABLE library_books (
     total_copies INTEGER DEFAULT 1,
     available_copies INTEGER DEFAULT 1,
     shelf_location VARCHAR(50),
-    added_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     added_by INTEGER,
     cover_image VARCHAR(255),
     FOREIGN KEY (added_by) REFERENCES library_admins(id)
@@ -168,10 +168,10 @@ CREATE TABLE library_books (
 
 -- Book loans
 CREATE TABLE book_loans (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    issue_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     due_date DATETIME NOT NULL,
     return_date DATETIME,
     fine_amount DECIMAL(10,2) DEFAULT 0,
@@ -187,11 +187,11 @@ CREATE TABLE book_loans (
 
 -- Book requests
 CREATE TABLE book_requests (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_title VARCHAR(200) NOT NULL,
     book_author VARCHAR(100),
-    request_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending',
     processed_by INTEGER,
     processed_date DATETIME,
@@ -202,7 +202,7 @@ CREATE TABLE book_requests (
 
 -- Lost items
 CREATE TABLE lost_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     item_name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -211,7 +211,7 @@ CREATE TABLE lost_items (
     date_lost DATE NOT NULL,
     status VARCHAR(20) DEFAULT 'lost',
     image_url VARCHAR(255),
-    reported_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    reported_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     verified_by INTEGER,
     verified_date DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -220,7 +220,7 @@ CREATE TABLE lost_items (
 
 -- Found items
 CREATE TABLE found_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     item_name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -229,7 +229,7 @@ CREATE TABLE found_items (
     date_found DATE NOT NULL,
     status VARCHAR(20) DEFAULT 'found',
     image_url VARCHAR(255),
-    reported_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    reported_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     verified_by INTEGER,
     verified_date DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -238,10 +238,10 @@ CREATE TABLE found_items (
 
 -- Lost item claims
 CREATE TABLE lost_item_claims (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     lost_item_id INTEGER NOT NULL,
     claimer_id INTEGER NOT NULL,
-    claim_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    claim_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending',
     admin_notes TEXT,
     processed_by INTEGER,
@@ -253,10 +253,10 @@ CREATE TABLE lost_item_claims (
 
 -- Found item claims
 CREATE TABLE found_item_claims (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     found_item_id INTEGER NOT NULL,
     claimant_id INTEGER NOT NULL,
-    claim_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    claim_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending',
     admin_notes TEXT,
     processed_by INTEGER,
@@ -268,7 +268,7 @@ CREATE TABLE found_item_claims (
 
 -- Clubs
 CREATE TABLE clubs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
     description TEXT,
     category VARCHAR(50),
@@ -285,7 +285,7 @@ CREATE TABLE clubs (
     members INTEGER DEFAULT 0,
     status VARCHAR(20) DEFAULT 'active',
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_by INTEGER,
     approved_date DATETIME,
     FOREIGN KEY (president_id) REFERENCES users(id),
@@ -298,11 +298,11 @@ CREATE TABLE clubs (
 
 -- Club memberships
 CREATE TABLE club_memberships (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     club_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     role VARCHAR(50) DEFAULT 'member',
-    joined_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dues_paid BOOLEAN DEFAULT 0,
     dues_amount DECIMAL(10,2) DEFAULT 0,
     dues_paid_date DATETIME,
@@ -317,7 +317,7 @@ CREATE TABLE club_memberships (
 
 -- Club events
 CREATE TABLE club_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     club_id INTEGER NOT NULL,
     title VARCHAR(200) NOT NULL,
     description TEXT,
@@ -327,7 +327,7 @@ CREATE TABLE club_events (
     current_participants INTEGER DEFAULT 0,
     status VARCHAR(20) DEFAULT 'upcoming',
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_by INTEGER,
     approved_date DATETIME,
     FOREIGN KEY (club_id) REFERENCES clubs(id),
@@ -337,10 +337,10 @@ CREATE TABLE club_events (
 
 -- Event RSVPs
 CREATE TABLE event_rsvps (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     event_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    rsvp_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    rsvp_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'confirmed',
     attended BOOLEAN DEFAULT 0,
     FOREIGN KEY (event_id) REFERENCES club_events(id),
@@ -350,7 +350,7 @@ CREATE TABLE event_rsvps (
 
 -- Doctors
 CREATE TABLE doctors (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     specialty VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -360,14 +360,14 @@ CREATE TABLE doctors (
     experience VARCHAR(50),
     languages TEXT,
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
     FOREIGN KEY (created_by) REFERENCES medical_admins(id)
 );
 
 -- Appointments
 CREATE TABLE appointments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
     service_type VARCHAR(100) NOT NULL,
@@ -375,7 +375,7 @@ CREATE TABLE appointments (
     appointment_time VARCHAR(10) NOT NULL,
     reason TEXT,
     status VARCHAR(20) DEFAULT 'upcoming',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by INTEGER,
     cancelled_by INTEGER,
     cancelled_date DATETIME,
@@ -388,7 +388,7 @@ CREATE TABLE appointments (
 
 -- Medications
 CREATE TABLE medications (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
     category VARCHAR(50),
@@ -396,7 +396,7 @@ CREATE TABLE medications (
     stock INTEGER DEFAULT 0,
     requires_prescription BOOLEAN DEFAULT 1,
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by INTEGER,
     updated_at DATETIME,
     FOREIGN KEY (created_by) REFERENCES medical_admins(id),
@@ -405,7 +405,7 @@ CREATE TABLE medications (
 
 -- Prescriptions
 CREATE TABLE prescriptions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
     medication_id INTEGER NOT NULL,
@@ -417,7 +417,7 @@ CREATE TABLE prescriptions (
     refills_used INTEGER DEFAULT 0,
     status VARCHAR(20) DEFAULT 'active',
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (doctor_id) REFERENCES doctors(id),
     FOREIGN KEY (medication_id) REFERENCES medications(id),
@@ -426,9 +426,9 @@ CREATE TABLE prescriptions (
 
 -- Prescription refills
 CREATE TABLE prescription_refills (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     prescription_id INTEGER NOT NULL,
-    request_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'pending',
     approved_by INTEGER,
     approved_date DATETIME,
@@ -438,7 +438,7 @@ CREATE TABLE prescription_refills (
 
 -- Medical records
 CREATE TABLE medical_records (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     record_type VARCHAR(50) NOT NULL,
     record_date DATE NOT NULL,
@@ -447,7 +447,7 @@ CREATE TABLE medical_records (
     notes TEXT,
     attachments TEXT,
     created_by INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (doctor_id) REFERENCES doctors(id),
     FOREIGN KEY (created_by) REFERENCES medical_admins(id)
@@ -455,7 +455,7 @@ CREATE TABLE medical_records (
 
 -- Feedback
 CREATE TABLE feedback (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     category VARCHAR(50),
     message TEXT NOT NULL,
@@ -463,7 +463,7 @@ CREATE TABLE feedback (
     admin_response TEXT,
     responded_by INTEGER,
     responded_date DATETIME,
-    submitted_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    submitted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (responded_by) REFERENCES admins(id)
 );
@@ -518,6 +518,11 @@ INSERT INTO clubs (name, description, category, contact_email, dues_amount, memb
 
 -- Insert sample medications
 INSERT INTO medications (name, description, category, price, stock, requires_prescription) VALUES
+('Paracetamol 500mg', 'Pain relief and fever reduction', 'Pain Relief', 50, 100, 0),
+('Amoxicillin 250mg', 'Antibiotic for bacterial infections', 'Antibiotics', 120, 50, 1),
+('Loratadine 10mg', 'Allergy relief', 'Allergy', 80, 75, 0),
+('Ibuprofen 400mg', 'Anti-inflammatory pain relief', 'Pain Relief', 65, 60, 0),
+('Vitamin C 1000mg', 'Immune system support', 'Supplements', 150, 200, 0);LUES
 ('Paracetamol 500mg', 'Pain relief and fever reduction', 'Pain Relief', 50, 100, 0),
 ('Amoxicillin 250mg', 'Antibiotic for bacterial infections', 'Antibiotics', 120, 50, 1),
 ('Loratadine 10mg', 'Allergy relief', 'Allergy', 80, 75, 0),
