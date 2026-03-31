@@ -1,20 +1,18 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-    DATABASE_PATH = os.environ.get('DATABASE_PATH', 'database/omnicampus.db')
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
+    SECRET_KEY = 'omnicampus-secret-key-12345'
+    DATABASE_URL = 'postgresql://postgres.qhehkycouyytrhcexngx:Sunch.1%40P8519@aws-0-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require'
+    SUPABASE_URL = 'https://qhehkycouyytrhcexngx.supabase.co'
+    SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFoZWhreWNvdXl5dHJoY2V4bmd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjAwOTAsImV4cCI6MjA5MDUzNjA5MH0.RNfMw2TNErRe7OQwP_uRHel7-R-bZWSAJjof5ndDP6k'
+    JWT_SECRET_KEY = 'omnicampus-jwt-secret-key-12345'
     JWT_ACCESS_TOKEN_EXPIRES = 86400  # 24 hours
-    DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
-    HOST = os.environ.get('HOST', '0.0.0.0')
+    DEBUG = False
+    HOST = '0.0.0.0'
     PORT = int(os.environ.get('PORT', 5000))
     
     # CORS settings
-    CORS_ORIGINS = ['http://localhost:5000', 'http://127.0.0.1:5000']
+    CORS_ORIGINS = ['*']
     
     # USIU colors for reference
     USIU_BLUE = '#003366'

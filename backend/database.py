@@ -1,11 +1,9 @@
 import os
 from supabase import create_client, Client
-from dotenv import load_dotenv
+from .config import Config
 
-load_dotenv()
-
-SUPABASE_URL = os.environ.get('SUPABASE_URL')
-SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+SUPABASE_URL = Config.SUPABASE_URL
+SUPABASE_KEY = Config.SUPABASE_KEY
 
 # Initialize the Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -19,12 +17,11 @@ def init_db():
     Note: Supabase schema should be managed via the Supabase dashboard 
     or SQL editor using the provided schema.sql.
     """
-    print("Supabase client initialized. Please ensure schema is applied in Supabase SQL Editor.")
+    print("Supabase client initialized.")
 
 def query_db(table, select="*", filters=None, one=False):
     """
     Perform a select query using Supabase SDK
-    Example: query_db('users', filters={'email': 'test@test.com'}, one=True)
     """
     query = supabase.table(table).select(select)
     
