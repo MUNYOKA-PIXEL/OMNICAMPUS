@@ -3,7 +3,7 @@ import os
 import datetime
 from pathlib import Path
 
-# Add the current directory to Python path
+# Add the current directory and its parent to Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir)
@@ -12,22 +12,32 @@ sys.path.insert(0, current_dir)
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-# Import configuration
-from .config import Config
-from .database import init_db, close_db
-
-# Import routes - use relative imports
-from .routes import (
-    library_routes,
-    lost_found_routes,
-    clubs_routes,
-    student_routes,
-    medical_routes,
-    admin_routes
-)
+# Import local modules - use absolute imports since we've added paths
+try:
+    from config import Config
+    from database import close_db
+    from routes import (
+        library_routes,
+        lost_found_routes,
+        clubs_routes,
+        student_routes,
+        medical_routes,
+        admin_routes
+    )
+except ImportError:
+    from .config import Config
+    from .database import close_db
+    from .routes import (
+        library_routes,
+        lost_found_routes,
+        clubs_routes,
+        student_routes,
+        medical_routes,
+        admin_routes
+    )
 
 # Create Flask app
-# On Vercel, static files are served from the root
+# On Vercel, static files are now in the root of the project
 app = Flask(__name__,
             static_folder='..',
             static_url_path='',
@@ -42,56 +52,45 @@ app.config['DEBUG'] = Config.DEBUG
 CORS(app, origins=Config.CORS_ORIGINS, supports_credentials=True)
 
 # ==================== Register Blueprints ====================
-
-# Student-facing routes
 app.register_blueprint(student_routes.bp)
-
-# Module-specific routes
 app.register_blueprint(library_routes.bp, url_prefix='/api/library')
 app.register_blueprint(lost_found_routes.bp, url_prefix='/api/lost-found')
 app.register_blueprint(clubs_routes.bp, url_prefix='/api/clubs')
 app.register_blueprint(medical_routes.bp, url_prefix='/api/medical')
-
-# Admin routes
 app.register_blueprint(admin_routes.bp, url_prefix='/api/admin')
-
-# ==================== Database Teardown ====================
 
 @app.teardown_appcontext
 def teardown_db(exception):
-    """Close database connection at the end of request"""
     close_db(exception)
 
-# ==================== Frontend Routes ====================
+# ==================== Frontend & Health Routes ====================
 
 @app.route('/')
 def serve_index():
-    """Serve the main index page"""
     return send_from_directory('..', 'index.html')
-
-# ==================== API Health Check ====================
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
         'database': 'supabase',
         'timestamp': str(datetime.datetime.now())
     })
 
-# ==================== Error Handlers ====================
-
-@app.errorhandler(404)
-def not_found(error):
-    """Handle 404 errors"""
-    return jsonify({
-        'error': 'Resource not found',
-        'message': 'The requested URL was not found on the server'
-    }), 404
+# If someone visits a frontend route that isn't handled by static files
+@app.route('/<path:path>')
+def serve_any_path(path):
+    # If the path exists in the root, serve it
+    if os.path.exists(os.path.join(parent_dir, path)):
+        return send_from_directory('..', path)
+    
+    # Fallback for SPA-like behavior or specific pages
+    if '.' not in path:
+        return send_from_directory('..', 'index.html')
+    
+    return jsonify({'error': 'Not found'}), 404
 
 # ==================== Run Application ====================
-
 if __name__ == '__main__':
     app.run(
         host=Config.HOST,
