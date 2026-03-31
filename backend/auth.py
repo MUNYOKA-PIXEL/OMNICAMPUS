@@ -1,8 +1,8 @@
 from functools import wraps
 from flask import request, jsonify, session
 import jwt
-from config import Config
-from models import User, Admin
+from backend.config import Config
+from backend.models import User, Admin
 
 def token_required(f):
     """Decorator to require JWT token for routes"""

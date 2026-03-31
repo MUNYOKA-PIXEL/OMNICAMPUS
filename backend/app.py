@@ -4,7 +4,7 @@ import datetime
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-# Add root directory to Python path for imports
+# Ensure root directory is in Python path
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if root_dir not in sys.path:
     sys.path.insert(0, root_dir)
@@ -22,33 +22,11 @@ try:
         admin_routes
     )
 except ImportError as e:
-    print(f"Import error: {e}")
-    # Fallback for different environments
-    try:
-        from .config import Config
-        from .database import close_db
-        from .routes import (
-            library_routes,
-            lost_found_routes,
-            clubs_routes,
-            student_routes,
-            medical_routes,
-            admin_routes
-        )
-    except ImportError:
-        from config import Config
-        from database import close_db
-        from routes import (
-            library_routes,
-            lost_found_routes,
-            clubs_routes,
-            student_routes,
-            medical_routes,
-            admin_routes
-        )
+    # This should not happen if sys.path is correct
+    print(f"Import error in backend/app.py: {e}")
+    raise
 
 def create_app():
-    # root_dir is already defined above
     app = Flask(__name__,
                 static_folder=root_dir,
                 static_url_path='',

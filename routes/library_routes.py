@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
-from models import LibraryBook, BookLoan, User
-from auth import token_required, admin_required
+from backend.models import LibraryBook, BookLoan, User
+from backend.auth import token_required, admin_required
 
 bp = Blueprint('library', __name__)
 

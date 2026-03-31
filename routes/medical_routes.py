@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
-from models import User, Admin
-from auth import token_required, admin_required
+from backend.models import User, Admin
+from backend.auth import token_required, admin_required
 
 bp = Blueprint('medical', __name__, url_prefix='/api/medical')
 

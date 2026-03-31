@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import Club, ClubEvent
-from auth import token_required, admin_required
+from backend.models import Club, ClubEvent
+from backend.auth import token_required, admin_required
 
 bp = Blueprint('clubs', __name__)
 
