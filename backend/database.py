@@ -1,7 +1,7 @@
 import os
 import sys
 from supabase import create_client, Client, ClientOptions
-from .config import Config
+from config import Config
 
 SUPABASE_URL = Config.SUPABASE_URL
 SUPABASE_KEY = Config.SUPABASE_KEY
